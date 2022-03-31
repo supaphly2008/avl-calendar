@@ -60,7 +60,7 @@ const PasswordInput = ({ type = "text", placeholder = "", className = "", value,
       <input
         className={`${className} bg-transparent px-[12px] pt-[19px] pb-[15px] h-[58px] 
     w-[335px] rounded-[8px] border-[2px] border-gray outline-none placeholder:text-gray 
-    focus:border-[2px] focus:border-white`}
+    focus:border-[2px] focus:border-primary--light hover:border-white`}
         type={type}
         placeholder={placeholder}
         value={value}
