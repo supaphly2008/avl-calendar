@@ -1,17 +1,35 @@
 import { useEffect, useState } from "react";
 import IconTick from "./IconTick";
 
-const passwordValidation = [
-  {
-    text: "Have at least one uppercase letter",
-  },
-  {
-    text: "Have at least one lowercase letter",
-  },
-];
-
 const PasswordInput = ({ type = "text", placeholder = "", className = "", value, onChange, label = "" }) => {
-  const [validations, setValidations] = useState(passwordValidation);
+  const [hasUpper, setHasUpper] = useState(false);
+  const [hasLower, setHasLower] = useState(false);
+  const [hasNumber, setHasNumber] = useState(false);
+  const [hasEnoughChars, setHasEnoughChars] = useState(false);
+  const [hasSymbol, setHasSymbol] = useState(false);
+
+  const validations = [
+    {
+      text: "Have at least one uppercase letter",
+      test: hasUpper,
+    },
+    {
+      text: "Have at least one lowercase letter",
+      test: hasLower,
+    },
+    {
+      text: "Have at least one number",
+      test: hasNumber,
+    },
+    {
+      text: "Have at least one special character (!@#$...etc)",
+      test: hasSymbol,
+    },
+    {
+      text: "Longer than 8 characters",
+      test: hasEnoughChars,
+    },
+  ];
 
   const Label = () => {
     if (label) {
@@ -19,11 +37,21 @@ const PasswordInput = ({ type = "text", placeholder = "", className = "", value,
     }
   };
 
-  useEffect(() => {
+  const validatePassword = () => {
     const hasLower = /[a-z]/g;
     const hasUpper = /[A-Z]/g;
-    if (hasLower.test(value)) {
-    }
+    const hasNumber = /[0-9]/g;
+    const hasSymbol = /\W|_/g;
+
+    hasLower.test(value) ? setHasLower(true) : setHasLower(false);
+    hasUpper.test(value) ? setHasUpper(true) : setHasUpper(false);
+    hasNumber.test(value) ? setHasNumber(true) : setHasNumber(false);
+    hasSymbol.test(value) ? setHasSymbol(true) : setHasSymbol(false);
+    value.length >= 8 ? setHasEnoughChars(true) : setHasEnoughChars(false);
+  };
+
+  useEffect(() => {
+    validatePassword();
   }, [value]);
 
   return (
@@ -38,23 +66,14 @@ const PasswordInput = ({ type = "text", placeholder = "", className = "", value,
         value={value}
         onChange={onChange}
       />
-      <div className="w-full bg-black--lighter px-[14px] py-[18px] rounded-[8px] relative top-[20px]">
-        {/* <IconTick /> */}
+      <div className="max-w-[335px] bg-black--lighter px-[14px] py-[18px] rounded-[8px] relative top-[20px]">
         <ul>
-          {validations.map((item, index) => (
-            <li key={index} className="flex items-center mb-[19px]">
-              <IconTick className={`w-[20px] h-[20px] mr-[12px] ${1 == 1 ? "text-primary--light" : ""}`} />
-              {item.text}
+          {validations.map((v, index) => (
+            <li className="flex items-center mb-[19px]" key={index}>
+              <IconTick className={`w-[20px] h-[20px] mr-[12px] ${v.test ? "text-primary--light" : ""}`} />
+              <div className="flex-1">{v.text}</div>
             </li>
           ))}
-          {/* <li className="flex items-center mb-[19px]">
-            <IconTick className={`w-[20px] h-[20px] mr-[12px] ${1 === 1 ? "text-primary--light" : ""} `} />
-            Have at least one uppercase letter
-          </li>
-          <li className="flex items-center">
-            <IconTick className="w-[20px] h-[20px] mr-[12px]" />
-            Have at least one lowercase letter
-          </li> */}
         </ul>
       </div>
     </div>
